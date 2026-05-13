@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Secret Birthday Mission 🎭</title>
     <style>
+        html, body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        h1, h2, h3, .title, .secret-title {
+            transform: translateZ(0);
+            will-change: transform;
+        }
+        
+        * {
+        -webkit-tap-highlight-color: transparent;
+        }
+
         :root {
             --gold: #f0c040;
             --gold-glow: #ffd700;
