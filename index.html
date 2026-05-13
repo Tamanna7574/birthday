@@ -3367,8 +3367,7 @@ body {
                     
                     "The world genuinely feels brighter with you in it.\n\n" +
                     
-                    "Happiest Birthdayyyy 🎂✨\n" +
-                    "🦴😭";
+                    "Happiest Birthdayyyy 🎂🍫🎉🍬🎊🍾✨\n";
                     
                 card.scrollIntoView({ behavior: 'smooth' });
                 const cardRect = card.getBoundingClientRect();
@@ -3586,6 +3585,25 @@ body {
         window.onload = () => {
     document.body.style.transform = "translateZ(0)";
 };
+
+
+
+  // Fix mobile scroll jitter during screen transitions
+  (function() {
+    const origGo = window.go;
+    if (typeof origGo === 'function') {
+      window.go = function(n) {
+        origGo(n);
+        // Remove smooth scrolling to prevent mobile shake
+        window.scrollTo(0, 0);
+      };
+    }
+    // Also disable default scroll restoration
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+  })();
+
     </script>
 
 </body>
