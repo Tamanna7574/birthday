@@ -37,6 +37,9 @@
             user-select: none;
             -webkit-user-select: none;
             transition: background 1.2s ease;
+            /* FIX: lock body from scrolling, app handles it internally */
+            overflow: hidden;
+            height: 100%;
         }
         body::after {
             content: '';
@@ -336,29 +339,52 @@
 
         /* ── APP ── */
         #app {
-            position: relative;
+            position: fixed !important;   /* FIX: keep app fixed, no page scroll */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
             padding: 20px;
             padding-top: 80px;
         }
-        .screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 22px;
-            text-align: center;
-            width: 100%;
-            max-width: 550px;
-            opacity: 0;
-            transform: translateY(40px) scale(0.95);
-            transition: all 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
-            pointer-events: none;
+        /* For tall screens, align to top so content scrolls properly */
+        #app.app-scroll {
+            align-items: flex-start;
+            justify-content: flex-start;
         }
+        .screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 22px;
+    text-align: center;
+
+    width: 100%;
+    max-width: 900px;   /* changed */
+
+    min-height: 100vh;  /* important */
+
+    margin: 0 auto;     /* important */
+
+    padding: 40px 20px; /* important */
+
+    box-sizing: border-box;
+
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+
+    transition: all 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+
+    pointer-events: none;
+}
         .screen.active {
             display: flex;
             opacity: 1;
@@ -711,88 +737,77 @@
             box-shadow: 0 0 8px #f8717188;
         }
         #trade-buttons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 12px;
-}
-
-#trade-buttons button{
-    min-width: 160px;
-}
-
-#risk-meter-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-size: 0.9rem;
-    color: #aaa;
-    margin-top: 12px;
-    flex-wrap: wrap;
-}
-
-#risk-bar-outer {
-    width: 140px;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 999px;
-    overflow: hidden;
-    position: relative;
-}
-
-#risk-bar-inner {
-    height: 100%;
-    border-radius: 999px;
-    transition: width 0.5s, background 0.5s;
-    background: linear-gradient(90deg, #4ade80, #facc15, #ef4444);
-}
-
-#risk-label {
-    font-size: 0.85rem;
-    color: #ccc;
-    min-width: 45px;
-}
-
-#mood-emoji {
-    font-size: 1.1rem;
-}
-
-#news-ticker {
-    background: rgba(255, 200, 40, 0.1);
-    border: 1px solid rgba(255, 200, 40, 0.3);
-    border-radius: 12px;
-    padding: 8px 14px;
-    font-size: 0.82rem;
-    color: #ffd700;
-    min-height: 28px;
-    animation: newsFlash 0.5s ease-out;
-    letter-spacing: 0.3px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-#price-display{
-    font-size: 3rem;
-    margin: 10px 0 0;
-    color: #4ade80;
-    text-shadow: 0 0 12px rgba(74, 222, 128, 0.5);
-}
-
-#trading-panel h3{
-    margin: 6px 0;
-}
-
-#trade-status{
-    text-align:center;
-    margin-top:10px;
-}
-
-#trade-hint{
-    text-align:center;
-    margin-top:4px;
-}
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        #trade-buttons button{
+            min-width: 160px;
+        }
+        #risk-meter-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        #risk-bar-outer {
+            width: 140px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+        #risk-bar-inner {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.5s, background 0.5s;
+            background: linear-gradient(90deg, #4ade80, #facc15, #ef4444);
+        }
+        #risk-label {
+            font-size: 0.85rem;
+            color: #ccc;
+            min-width: 45px;
+        }
+        #mood-emoji {
+            font-size: 1.1rem;
+        }
+        #news-ticker {
+            background: rgba(255, 200, 40, 0.1);
+            border: 1px solid rgba(255, 200, 40, 0.3);
+            border-radius: 12px;
+            padding: 8px 14px;
+            font-size: 0.82rem;
+            color: #ffd700;
+            min-height: 28px;
+            animation: newsFlash 0.5s ease-out;
+            letter-spacing: 0.3px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        #price-display{
+            font-size: 3rem;
+            margin: 10px 0 0;
+            color: #4ade80;
+            text-shadow: 0 0 12px rgba(74, 222, 128, 0.5);
+        }
+        #trading-panel h3{
+            margin: 6px 0;
+        }
+        #trade-status{
+            text-align:center;
+            margin-top:10px;
+        }
+        #trade-hint{
+            text-align:center;
+            margin-top:4px;
+        }
         @keyframes newsFlash {
             from {
                 background: rgba(255, 200, 40, 0.35);
@@ -806,98 +821,66 @@
 
         /* ── CAKE 3D UPGRADE ── */
         .cake-wrapper {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    
-    margin-top: 70px; /* pushes cake downward */
-    margin-bottom: 20px;
-}
-
-.single-cake {
-    position: relative;
-    font-size: 100px;
-    line-height: 1;
-
-    filter:
-        drop-shadow(0 10px 25px rgba(0,0,0,0.6))
-        drop-shadow(0 0 20px rgba(255,180,60,0.3));
-
-    transition: all 0.6s ease, filter 0.8s;
-}
-
-.cake-glow-bright {
-    filter:
-        drop-shadow(0 10px 25px rgba(0,0,0,0.6))
-        drop-shadow(0 0 35px rgba(255,180,60,0.7))
-        brightness(1.15) !important;
-}
-
-.cake-glow-dim {
-    filter:
-        drop-shadow(0 10px 25px rgba(0,0,0,0.6))
-        drop-shadow(0 0 8px rgba(255,180,60,0.2))
-        brightness(0.85) !important;
-}
-
-.cake-shadow {
-    position: absolute;
-    bottom: -18px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 120px;
-    height: 20px;
-
-    background: rgba(0,0,0,0.5);
-    border-radius: 50%;
-    filter: blur(14px);
-
-    z-index: -1;
-    pointer-events: none;
-}
-
-.candle-on-cake {
-    position: absolute;
-
-    top: -38px; /* FIXED */
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    z-index: 3;
-    transition: all 0.5s ease;
-}
-
-.candle-stick {
-    font-size: 35px;
-    line-height: 1;
-}
-
-.candle-flame {
-    font-size: 40px;
-
-    animation: flickerCandle 0.25s infinite alternate;
-
-    filter:
-        drop-shadow(0 0 18px #ff8c00)
-        drop-shadow(0 0 35px #ff6600);
-
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    position: relative;
-}
-
-.screen[data-screen="8"] h2{
-    margin-bottom: 50px !important;
-}
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 70px;
+            margin-bottom: 20px;
+        }
+        .single-cake {
+            position: relative;
+            font-size: 100px;
+            line-height: 1;
+            filter: drop-shadow(0 10px 25px rgba(0,0,0,0.6)) drop-shadow(0 0 20px rgba(255,180,60,0.3));
+            transition: all 0.6s ease, filter 0.8s;
+        }
+        .cake-glow-bright {
+            filter: drop-shadow(0 10px 25px rgba(0,0,0,0.6)) drop-shadow(0 0 35px rgba(255,180,60,0.7)) brightness(1.15) !important;
+        }
+        .cake-glow-dim {
+            filter: drop-shadow(0 10px 25px rgba(0,0,0,0.6)) drop-shadow(0 0 8px rgba(255,180,60,0.2)) brightness(0.85) !important;
+        }
+        .cake-shadow {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 20px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            filter: blur(14px);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .candle-on-cake {
+            position: absolute;
+            top: -38px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 3;
+            transition: all 0.5s ease;
+        }
+        .candle-stick {
+            font-size: 35px;
+            line-height: 1;
+        }
+        .candle-flame {
+            font-size: 40px;
+            animation: flickerCandle 0.25s infinite alternate;
+            filter: drop-shadow(0 0 18px #ff8c00) drop-shadow(0 0 35px #ff6600);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .screen[data-screen="8"] h2{
+            margin-bottom: 50px !important;
+        }
         @keyframes flickerCandle {
             0% {
                 transform: scale(1) rotate(-3deg) skewX(-2deg);
@@ -1046,7 +1029,8 @@
             align-items: center;
             gap: 10px;
             min-height: 200px;
-            justify-content: center;
+            justify-content: flex-start !important; /* stack from top, never cut */
+            padding-top: 20px;
         }
         .gift-box {
             width: 130px;
@@ -1183,7 +1167,6 @@
             color: #e0d8f0;
             letter-spacing: 0.3px;
         }
-
         #poem-card {
             background: rgba(20, 15, 30, 0.9);
             padding: 28px 24px;
@@ -1723,49 +1706,46 @@
             }
         }
 
-
         * {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-}
-
-body {
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-}
-
-.screen,
-.screen * {
-    isolation: isolate;
-}
-
-@media (max-width: 1024px) {
-  h1 {
-    background: none !important;
-    -webkit-text-fill-color: var(--gold-glow) !important;
-    color: var(--gold-glow) !important;
-    filter: none !important;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.9) !important;
-  }
-  h2 {
-    color: var(--gold-glow) !important;
-  }
-}
-
-@media (max-width: 1024px) {
-  html, body {
-    height: 100%;
-    overflow: hidden;
-  }
-  #app {
-    min-height: 100%;
-    height: 100%;
-  }
-}
-
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        body {
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .screen,
+        .screen * {
+            isolation: isolate;
+        }
+        @media (max-width: 1024px) {
+            h1 {
+                background: none !important;
+                -webkit-text-fill-color: var(--gold-glow) !important;
+                color: var(--gold-glow) !important;
+                filter: none !important;
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.9) !important;
+            }
+            h2 {
+                color: var(--gold-glow) !important;
+            }
+        }
+        @media (max-width: 1024px) {
+            html, body {
+                height: 100%;
+            }
+            #app {
+                min-height: 100%;
+                height: 100%;
+            }
+        }
+        html, body {
+            overflow: visible;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -1815,7 +1795,7 @@ body {
             <button onclick="check1()">Submit Answer</button>
             <p id="hint-text" style="font-size:0.85rem;color:#fbbf24;min-height:24px;"></p>
             <div id="choice-section" class="hidden" style="margin-top:8px;">
-                <p style="font-size:0.9rem;color:#ccc;">Before you go... <br><strong>What drives him most?</strong></p>
+                <p style="font-size:0.9rem;color:#ccc;">Before you go... <br><strong>What drives you most?</strong></p>
                 <div class="choice-buttons">
                     <button class="choice-btn" onclick="selectTrait('dreams')">🌙 Dreams</button>
                     <button class="choice-btn" onclick="selectTrait('curiosity')">🔍 Curiosity</button>
@@ -1880,52 +1860,27 @@ body {
         </section>
 
         <!-- SCREEN 6: JOURNEY MAP -->
-<section class="screen" data-screen="6">
-
-    <h2 style="color:#ffd700;">⏳ A Story Still Being Written</h2>
-
-    <p style="font-size:0.95rem;color:#aaa;max-width:700px;margin:auto;">
-        Some moments changed everything.  
-        Some people stayed.  
-        Some dreams quietly grew in the background.  
-        And somehow, every chapter led here.
-    </p>
-
-    <div class="journey-map-container" id="journey-map">
-
-        <span class="journey-node" style="top:12%;left:8%;" title="The Beginning">
-            🌱
-        </span>
-
-        <span class="journey-node" style="top:58%;left:24%;" title="Late Night Hustles">
-            🌃
-        </span>
-
-        <span class="journey-node" style="top:22%;left:43%;" title="Unexpected Lessons">
-            📖
-        </span>
-
-        <span class="journey-node" style="top:63%;left:58%;" title="Silent Growth">
-            🌊
-        </span>
-
-        <span class="journey-node" style="top:18%;left:76%;" title="Dreams That Stayed">
-            ✨
-        </span>
-
-        <span class="journey-node" style="top:50%;left:88%;" title="The Person Becoming">
-            👑
-        </span>
-
-    </div>
-
-    <p style="font-style:italic;color:#ffd700;font-size:1.05rem;letter-spacing:1px;">
-        Beginning → Struggles → Lessons → Growth → Becoming
-    </p>
-
-    <button onclick="go(7)">🎉 Continue The Celebration →</button>
-
-</section>
+        <section class="screen" data-screen="6">
+            <h2 style="color:#ffd700;">⏳ A Story Still Being Written</h2>
+            <p style="font-size:0.95rem;color:#aaa;max-width:700px;margin:auto;">
+                Some moments changed everything.  
+                Some people stayed.  
+                Some dreams quietly grew in the background.  
+                And somehow, every chapter led here.
+            </p>
+            <div class="journey-map-container" id="journey-map">
+                <span class="journey-node" style="top:12%;left:8%;" title="The Beginning">🌱</span>
+                <span class="journey-node" style="top:58%;left:24%;" title="Late Night Hustles">🌃</span>
+                <span class="journey-node" style="top:22%;left:43%;" title="Unexpected Lessons">📖</span>
+                <span class="journey-node" style="top:63%;left:58%;" title="Silent Growth">🌊</span>
+                <span class="journey-node" style="top:18%;left:76%;" title="Dreams That Stayed">✨</span>
+                <span class="journey-node" style="top:50%;left:88%;" title="The Person Becoming">👑</span>
+            </div>
+            <p style="font-style:italic;color:#ffd700;font-size:1.05rem;letter-spacing:1px;">
+                Beginning → Struggles → Lessons → Growth → Becoming
+            </p>
+            <button onclick="go(7)">🎉 Continue The Celebration →</button>
+        </section>
 
         <!-- SCREEN 7: CELEBRATION (YOU DID IT!) -->
         <section class="screen" data-screen="7">
@@ -1963,32 +1918,32 @@ body {
                 <div class="gift-box gift-color-red" id="gift1" onclick="openGift1()">
                     <div class="g-lid"></div><div class="g-body"><div class="g-ribbon-h"></div><div class="g-ribbon-v"></div></div>
                 </div>
-            </div>
-            <div class="gift-box gift-color-blue hidden" id="gift2" onclick="openGift2()" style="margin-top:10px;">
-                <div class="g-lid"></div><div class="g-body"><div class="g-ribbon-h"></div><div class="g-ribbon-v"></div></div>
-            </div>
-            <div class="gift-box gift-color-purple hidden" id="gift3" onclick="openGift3()" style="margin-top:10px;">
-                <div class="g-lid"></div><div class="g-body"><div class="g-ribbon-h"></div><div class="g-ribbon-v"></div></div>
+                <div class="gift-box gift-color-blue hidden" id="gift2" onclick="openGift2()">
+                    <div class="g-lid"></div><div class="g-body"><div class="g-ribbon-h"></div><div class="g-ribbon-v"></div></div>
+                </div>
+                <div class="gift-box gift-color-purple hidden" id="gift3" onclick="openGift3()">
+                    <div class="g-lid"></div><div class="g-body"><div class="g-ribbon-h"></div><div class="g-ribbon-v"></div></div>
+                </div>
+                <div class="gift-box gift-color-green hidden" id="gift4" onclick="openFinalGift()">
+                    <div class="g-lid"></div><div class="g-body"><div class="g-ribbon-h"></div><div class="g-ribbon-v"></div></div>
+                </div>
+                <div class="gift-box gift-color-gold hidden" id="gift5" onclick="openPoemGift()">
+                    <div class="g-lid"></div><div class="g-body"><div class="g-ribbon-h"></div><div class="g-ribbon-v"></div></div>
+                </div>
             </div>
             <div id="funny-reveal" class="hidden gift-reveal-content">
                 😂🤣<br><p style="font-size:1rem; line-height:1.5;">
                 <strong>Plot twist:</strong> You're officially older now.<br>
                 But also wiser, funnier, and <strong>still</strong> bad at waking up early! 😴☕<br>
-                And now that you’re 31… your bones have entered their <em>"Great Depression"</em>  era—they require a 3-to-5 minute loading screen just to stand up! 👵🦴😂
-            </p>
+                And now that you’re 31… your bones have entered their <em>"Great Depression"</em> era—they require a 3-to-5 minute loading screen just to stand up! 👵🦴😂
+                </p>
                 <p style="font-size:0.8rem;color:#aaa;">(One more tap... trust me)</p>
                 <button onclick="revealFinalGift()">🎀 Unwrap The Real Gift</button>
-            </div>
-            <div class="gift-box gift-color-green hidden" id="gift4" onclick="openFinalGift()" style="margin-top:10px;">
-                <div class="g-lid"></div><div class="g-body"><div class="g-ribbon-h"></div><div class="g-ribbon-v"></div></div>
             </div>
             <div id="final-card" class="hidden">
                 <h2>❤️</h2>
                 <p id="final-msg"></p>
                 <button onclick="revealPoemGift()" style="margin-top:15px;">✨ Last one →</button>
-            </div>
-            <div class="gift-box gift-color-gold hidden" id="gift5" onclick="openPoemGift()" style="margin-top:10px;">
-                <div class="g-lid"></div><div class="g-body"><div class="g-ribbon-h"></div><div class="g-ribbon-v"></div></div>
             </div>
             <div id="poem-card" class="hidden">
                 <div class="poem-title">💌 A Poem For You</div>
@@ -1999,64 +1954,48 @@ body {
 
         <!-- SCREEN 10: TRAITS UNLOCKED -->
         <section class="screen" data-screen="10">
-
             <h2 style="color:#ffd700;">✨ Built Through The Journey</h2>
-
             <p style="font-size:0.92rem;color:#aaa;max-width:500px;line-height:1.6;margin-bottom:18px;">
                 Not unlocked in a day.  
                 Every late night, every setback, every quiet win shaped these traits.
             </p>
-
             <div style="display:flex;flex-direction:column;gap:14px;width:100%;max-width:420px;">
-
                 <div class="trait-row" style="animation:fadeSlideIn 0.5s 0.2s both;">
                     🌙 <strong>Silent Observer</strong>
                     <div style="font-size:0.85rem;color:#bbb;margin-top:4px;">
                         Notices the little things others miss
                     </div>
                 </div>
-
                 <div class="trait-row" style="animation:fadeSlideIn 0.5s 0.5s both;">
                     🔥 <strong>Relentless Spirit</strong>
                     <div style="font-size:0.85rem;color:#bbb;margin-top:4px;">
                         Keeps moving forward even in silence
                     </div>
                 </div>
-
                 <div class="trait-row" style="animation:fadeSlideIn 0.5s 0.8s both;">
                     🧠 <strong>Curious Mind</strong>
                     <div style="font-size:0.85rem;color:#bbb;margin-top:4px;">
                         Always learning. Always questioning.
                     </div>
                 </div>
-
                 <div class="trait-row special-trait"
-                    style="animation:fadeSlideIn 0.5s 1.1s both;"
-                    id="chosen-trait-row">
-
+                     style="animation:fadeSlideIn 0.5s 1.1s both;"
+                     id="chosen-trait-row">
                     👑 <strong>Still Becoming</strong>
-
                     <div style="font-size:0.85rem;color:#ffe082;margin-top:4px;">
                         The best chapter hasn’t happened yet
                     </div>
-
                 </div>
-
             </div>
-
             <div style="margin-top:22px;font-size:1.1rem;letter-spacing:4px;color:#ffd700;">
                 🌱 → 🔥 → ⚡ → 👑
             </div>
-
             <p style="font-style:italic;color:#ffd700;margin-top:16px;font-size:1rem;line-height:1.6;"
-            id="trait-quote">
+               id="trait-quote">
                 “Growth is invisible… until one day it changes everything.”
             </p>
-
             <button onclick="go(11)">🌌 The Grand Finale →</button>
-
             <style>
-
                 .trait-row {
                     background: rgba(255, 255, 255, 0.05);
                     padding: 14px 18px;
@@ -2068,23 +2007,16 @@ body {
                     transition: 0.3s ease;
                     box-shadow: 0 0 15px rgba(255,215,0,0.05);
                 }
-
                 .trait-row:hover {
                     transform: translateY(-2px) scale(1.01);
                     border-color: rgba(255,215,0,0.5);
                     box-shadow: 0 0 20px rgba(255,215,0,0.12);
                 }
-
                 .special-trait {
-                    background: linear-gradient(
-                        135deg,
-                        rgba(255,215,0,0.12),
-                        rgba(255,255,255,0.04)
-                    );
+                    background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,255,255,0.04));
                     border: 1px solid rgba(255,215,0,0.55);
                     box-shadow: 0 0 25px rgba(255,215,0,0.15);
                 }
-
                 @keyframes fadeSlideIn {
                     from {
                         opacity: 0;
@@ -2095,110 +2027,57 @@ body {
                         transform: translateX(0);
                     }
                 }
-
             </style>
-
         </section>
 
         <!-- SCREEN 11: FINALE -->
         <section class="screen" data-screen="11">
-
             <div class="final-message-overlay">
-
                 <div class="big-emoji">✨</div>
-
                 <h1 id="finale-title">
                     Some People Just Leave A Different Impact
                 </h1>
-
                 <p style="font-size:1.08rem;color:#e0d8f0;max-width:520px;line-height:1.8;"
-                id="finale-desc">
-
+                   id="finale-desc">
                     In a world full of temporary moments,  
                     you became someone unforgettable.  
                     <br><br>
-
                     Not because life was easy.  
                     Not because every plan worked out.  
                     But because you kept growing through every phase quietly,
                     carrying dreams, memories, laughter, and strength with you.
                     <br><br>
-
                     And honestly… that kind of energy is rare.
-
                 </p>
-
-                <!-- ONLY UPDATED SECTION BELOW -->
                 <div class="trait-badges" id="finale-badges">
-
-                    <span class="trait-badge">
-                        🌙 The nights you overthought everything
-                    </span>
-
-                    <span class="trait-badge">
-                        📖 Lessons learned without anyone noticing
-                    </span>
-
-                    <span class="trait-badge">
-                        🔥 Battles fought in silence
-                    </span>
-
-                    <span class="trait-badge">
-                        🌊 Growth that no one clapped for
-                    </span>
-
-                    <span class="trait-badge">
-                        ✨ Dreams that refused to die
-                    </span>
-
-                    <span class="trait-badge">
-                        👑 A story still becoming legendary
-                    </span>
-
+                    <span class="trait-badge">🌙 The nights you overthought everything</span>
+                    <span class="trait-badge">📖 Lessons learned without anyone noticing</span>
+                    <span class="trait-badge">🔥 Battles fought in silence</span>
+                    <span class="trait-badge">🌊 Growth that no one clapped for</span>
+                    <span class="trait-badge">✨ Dreams that refused to die</span>
+                    <span class="trait-badge">👑 A story still becoming legendary</span>
                 </div>
-
-                <div style="
-                    margin-top:18px;
-                    color:#ffd700;
-                    font-size:1.15rem;
-                    letter-spacing:5px;
-                    opacity:0.9;
-                ">
+                <div style="margin-top:18px;color:#ffd700;font-size:1.15rem;letter-spacing:5px;opacity:0.9;">
                     🌱 → 🌙 → 🔥 → ✨ → 👑
                 </div>
-
-                <p style="
-                    font-style:italic;
-                    color:#ffd700;
-                    font-size:1.08rem;
-                    margin-top:18px;
-                    max-width:560px;
-                    line-height:1.9;
-                "
-                id="finale-quote">
-
+                <p style="font-style:italic;color:#ffd700;font-size:1.08rem;margin-top:18px;max-width:560px;line-height:1.9;"
+                   id="finale-quote">
                     “The beautiful thing about you is that  
                     you are still becoming the person you once dreamed of.”
                     <br><br>
-
                     And one day, you’ll look back at this version of yourself  
                     and realize…  
                     you made it through everything.
                     <br><br>
-
                     <strong>
                         Happy Birthday.  
                         Keep becoming. 🎉
                     </strong>
-
                 </p>
-
                 <button onclick="restartExperience()" style="margin-top:18px;">
                     🔄 Relive The Journey
                 </button>
-
             </div>
-
         </section>
     </div>
 
@@ -2656,7 +2535,15 @@ body {
                 updateProgressTracker(getTrackerStage(n));
                 setSceneClass(n);
                 saveState();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // For tall screens, change flex alignment to start so they can scroll fully
+                const app = document.getElementById('app');
+                if ([5, 9, 10, 11].includes(n)) {
+                    app.classList.add('app-scroll');
+                } else {
+                    app.classList.remove('app-scroll');
+                }
+                // Reset scroll position inside the app container
+                app.scrollTop = 0;
                 if (n === 11) { activateConstellation();
                     fadeMusic(1, 1500);
                     spawnPartyHeavy();
@@ -3268,8 +3155,10 @@ body {
             setTimeout(spawnPartyEffects, 3000); }
 
         // ==================== GIFTS ====================
-        function openGift1() { const g1 = document.getElementById("gift1"); if (g1.classList.contains("open") || State
-                .openedGifts.includes(1)) return;
+        // All scrollIntoView calls removed to prevent screen jumps
+        function openGift1() {
+            const g1 = document.getElementById("gift1");
+            if (g1.classList.contains("open") || State.openedGifts.includes(1)) return;
             g1.classList.add("open");
             State.openedGifts.push(1);
             haptic(25);
@@ -3277,12 +3166,13 @@ body {
             document.getElementById("gift-instruction").textContent = "Wait... there's another one! 👀";
             showToast("🎁 First layer opened!", 1500);
             setTimeout(() => { g1.style.display = 'none';
-                document.getElementById("gift2").classList.remove("hidden");
-                document.getElementById("gift2").scrollIntoView({ behavior: 'smooth' }); }, 900);
-            saveState(); }
+                document.getElementById("gift2").classList.remove("hidden"); }, 900);
+            saveState();
+        }
 
-        function openGift2() { const g2 = document.getElementById("gift2"); if (g2.classList.contains("open") || State
-                .openedGifts.includes(2)) return;
+        function openGift2() {
+            const g2 = document.getElementById("gift2");
+            if (g2.classList.contains("open") || State.openedGifts.includes(2)) return;
             g2.classList.add("open");
             State.openedGifts.push(2);
             haptic(25);
@@ -3290,78 +3180,80 @@ body {
             document.getElementById("gift-instruction").textContent = "Another one?! Keep going... 😏";
             showToast("🎁 Second layer... suspicious!", 1500);
             setTimeout(() => { g2.style.display = 'none';
-                document.getElementById("gift3").classList.remove("hidden");
-                document.getElementById("gift3").scrollIntoView({ behavior: 'smooth' }); }, 900);
-            saveState(); }
+                document.getElementById("gift3").classList.remove("hidden"); }, 900);
+            saveState();
+        }
 
-        function openGift3() { const g3 = document.getElementById("gift3"); if (g3.classList.contains("open") || State
-                .openedGifts.includes(3)) return;
+        function openGift3() {
+            const g3 = document.getElementById("gift3");
+            if (g3.classList.contains("open") || State.openedGifts.includes(3)) return;
             g3.classList.add("open");
             State.openedGifts.push(3);
             haptic(30);
             playUISound(600, 'sine', 0.2, 0.07);
             document.getElementById("gift-instruction").textContent = "";
             showToast("🎁 Third layer... what's inside?!", 1800);
-            setTimeout(() => { g3.style.display = 'none';
-                document.getElementById("funny-reveal").classList.remove("hidden");
-                document.getElementById("funny-reveal").scrollIntoView({ behavior: 'smooth' }); }, 900);
-            saveState(); }
+            setTimeout(() => {
+                g3.style.display = 'none';
+                const funny = document.getElementById("funny-reveal");
+                funny.classList.remove("hidden");
+            }, 900);
+            saveState();
+        }
 
-        function revealFinalGift() { document.getElementById("funny-reveal").classList.add("hidden");
+        function revealFinalGift() {
+            document.getElementById("funny-reveal").classList.add("hidden");
             document.getElementById("gift-instruction").textContent = "The real gift awaits... 🎀";
             document.getElementById("gift4").classList.remove("hidden");
-            document.getElementById("gift4").scrollIntoView({ behavior: 'smooth' });
             showToast("🎁 One last box...", 1800);
-            playUISound(500, 'sine', 0.2, 0.06); }
+            playUISound(500, 'sine', 0.2, 0.06);
+        }
 
-        function openFinalGift() { const g4 = document.getElementById("gift4"); if (g4.classList.contains("open") || State
-                .openedGifts.includes(4)) return;
+        function openFinalGift() {
+            const g4 = document.getElementById("gift4");
+            if (g4.classList.contains("open") || State.openedGifts.includes(4)) return;
             g4.classList.add("open");
             State.openedGifts.push(4);
             haptic(40);
             playDing();
             document.getElementById("gift-instruction").textContent = "";
-            showToast("💌 Opening your message...", 2000); const trait = State.chosenTrait || 'dreams'; const personalLine = {
+            showToast("💌 Opening your message...", 2000);
+            const trait = State.chosenTrait || 'dreams';
+            const personalLine = {
                 dreams: "You chase dreams like you score runs —\nwith precision and passion.",
                 curiosity: "Your curiosity lights up every room —\nalways questioning, always growing.",
                 love: "Your heart? It's pure gold.\nEverything you do, you do with love.",
                 ambition: "Your ambition burns brighter than any star.\nIt's not a flaw — it's your superpower."
-            } [trait] || "You chase dreams like you score runs —\nwith precision and passion.";
-            setTimeout(() => { g4.style.display = 'none'; const card = document.getElementById("final-card");
+            }[trait] || "You chase dreams like you score runs —\nwith precision and passion.";
+            setTimeout(() => {
+                g4.style.display = 'none';
+                const card = document.getElementById("final-card");
                 card.classList.remove("hidden");
                 document.getElementById("final-msg").innerText =
                     `Breaking News: You are now officially 31 ❤️\n\n${personalLine}\n` +
-                    
                     "Which means two things:\n" +
                     "1. You're wiser.\n" +
                     "2. Your bones now make sound effects  😂🦴😭\n\n" +
-                    
                     "Plot twist:\n" +
                     "You’re basically becoming a limited edition human now.\n" +
                     "A little more expensive,\n" +
                     "slightly harder to recover after bad sleep,\n" +
                     "but still iconic 😂☕\n\n" +
-                    
                     "But honestly?\n" +
                     "You’re still that rare kind of person who turns ordinary moments\n" +
                     "into unforgettable memories.\n\n" +
-                    
                     "You laugh loudly,\ncare deeply,\ndream endlessly,\n" +
                     "and somehow make chaos look attractive ✨\n\n" +
-                    
                     "Your vibe is a mix of ambition,\nchildish humor,\nlate-night overthinking,\n" +
                     "and pretending '5 more minutes' actually means 5 minutes 😴☕\n\n" +
-                    
                     "And even now,\n" +
                     "with your bones loading like slow internet,\n" +
                     "you still carry a spark that makes people feel lighter around you ❤️\n\n" +
-                    
                     "On your 31st birthday,\n" +
                     "I genuinely wish that life becomes kinder to you.\n" +
                     "May you stay healthy enough to enjoy every little moment,\n" +
                     "wealthy enough to buy whatever your heart wants,\n" +
                     "and peaceful enough to sleep without overthinking at 2AM 😭✨\n\n" +
-                    
                     "May this year bring you:\n" +
                     "• pockets full of money 💸\n" +
                     "• good health and strong bones 😂🦴\n" +
@@ -3369,29 +3261,24 @@ body {
                     "• people who genuinely value you\n" +
                     "• success that feels fulfilling\n" +
                     "• and happiness that stays for a long time ❤️\n\n" +
-                    
                     "I hope your hard work pays off.\n" +
                     "I hope your silent prayers get answered.\n" +
                     "And I hope life gives you more reasons to smile than stress.\n\n" +
-                    
                     "Stay soft.\nStay wild.\nStay wonderfully weird.\n\n" +
-                    
                     "The world genuinely feels brighter with you in it.\n\n" +
-                    
                     "Happiest Birthdayyyy 🎂🍫🎉🍬🎊🍾✨\n";
-                    
-                card.scrollIntoView({ behavior: 'smooth' });
                 const cardRect = card.getBoundingClientRect();
                 spawnConfettiBurst(cardRect.left + cardRect.width / 2, cardRect.top, 60);
-                fadeMusic(0.9, 1000); }, 700);
-            saveState(); }
+                fadeMusic(0.9, 1000);
+            }, 700);
+            saveState();
+        }
 
         // ==================== POEM GIFT (NEW) ====================
         function revealPoemGift() {
             document.getElementById("final-card").classList.add("hidden");
             document.getElementById("gift-instruction").textContent = "One more surprise... 📜";
             document.getElementById("gift5").classList.remove("hidden");
-            document.getElementById("gift5").scrollIntoView({ behavior: 'smooth' });
             showToast("🎁 A hidden gift appears...", 2000);
             playUISound(550, 'sine', 0.2, 0.07);
         }
@@ -3449,7 +3336,6 @@ body {
                 const poemCard = document.getElementById("poem-card");
                 poemCard.classList.remove("hidden");
                 document.getElementById("poem-text").innerText = poemText;
-                poemCard.scrollIntoView({ behavior: 'smooth' });
                 const poemRect = poemCard.getBoundingClientRect();
                 spawnConfettiBurst(poemRect.left + poemRect.width / 2, poemRect.top, 50, ['#ffd700', '#e8a0b4',
                     '#f0c860', '#fff', '#ff6b9d'
@@ -3460,41 +3346,58 @@ body {
         }
 
         // ==================== FINALE ====================
-        function triggerFinalSurprise() { if (State.secretEligible && State.sixCount >= 3 && State.totalProfit >= 150 &&
-                State.puzzleAttempts === 0) { document.getElementById("secret-overlay").classList.add("show");
+        function triggerFinalSurprise() {
+            if (State.secretEligible && State.sixCount >= 3 && State.totalProfit >= 150 && State.puzzleAttempts === 0) {
+                document.getElementById("secret-overlay").classList.add("show");
                 showAchievement("👑 True Legend", "👑");
                 haptic(100);
                 setTimeout(() => { document.getElementById("secret-overlay").classList.remove("show");
-                    go(10); }, 3000); } else { go(10); } }
+                    go(10); }, 3000);
+            } else { go(10); }
+        }
 
         function closeSecretEnding() { document.getElementById("secret-overlay").classList.remove("show");
             go(10); }
 
         // ==================== MUTATION OBSERVERS ====================
-        new MutationObserver(() => { const s10 = document.querySelector('[data-screen="10"]'); if (s10 && s10.classList
-                .contains('active')) { const trait = State.chosenTrait || 'dreams';
+        new MutationObserver(() => {
+            const s10 = document.querySelector('[data-screen="10"]');
+            if (s10 && s10.classList.contains('active')) {
+                const trait = State.chosenTrait || 'dreams';
                 document.getElementById("chosen-trait-row") && (document.getElementById("chosen-trait-row").innerHTML =
                     `🎯 <strong>${traitNames[trait] || 'Dreamer Level: HIGH'}</strong>`);
                 document.getElementById("trait-quote") && (document.getElementById("trait-quote").textContent =
-                    traitQuotes[trait] || traitQuotes['dreams']); } }).observe(document.querySelector(
-            '[data-screen="10"]'), { attributes: true, attributeFilter: ['class'] });
-        new MutationObserver(() => { const s11 = document.querySelector('[data-screen="11"]'); if (s11 && s11.classList
-                .contains('active')) { const trait = State.chosenTrait || 'dreams'; const finaleQuote = { dreams: '"Only those who dare to dream can touch the stars.\nYou\'ve been doing it your whole life."',
+                    traitQuotes[trait] || traitQuotes['dreams']);
+            }
+        }).observe(document.querySelector('[data-screen="10"]'), { attributes: true, attributeFilter: ['class'] });
+
+        new MutationObserver(() => {
+            const s11 = document.querySelector('[data-screen="11"]');
+            if (s11 && s11.classList.contains('active')) {
+                const trait = State.chosenTrait || 'dreams';
+                const finaleQuote = {
+                    dreams: '"Only those who dare to dream can touch the stars.\nYou\'ve been doing it your whole life."',
                     curiosity: '"Curiosity didn\'t kill the cat — it made a legend.\nYou are proof."',
                     love: '"Love is the gravity that holds constellations together.\nYou radiate it."',
-                    ambition: '"Ambition built empires and lit stars.\nYou carry that fire."' };
+                    ambition: '"Ambition built empires and lit stars.\nYou carry that fire."'
+                };
                 document.getElementById("finale-quote") && (document.getElementById("finale-quote").innerHTML = (
-                    finaleQuote[trait] || finaleQuote['dreams']) +
-                    '<br><strong>Happy Birthday, legend.</strong> 🎉'); } }).observe(document.querySelector(
-            '[data-screen="11"]'), { attributes: true, attributeFilter: ['class'] });
-        new MutationObserver(() => { const s4 = document.querySelector('[data-screen="4"]'); if (s4 && s4.classList.contains(
-                'active') && !tradingActive && State.totalProfit < 100) startTrading(); }).observe(document.querySelector(
-            '[data-screen="4"]'), { attributes: true, attributeFilter: ['class'] });
+                    finaleQuote[trait] || finaleQuote['dreams']) + '<br><strong>Happy Birthday, legend.</strong> 🎉');
+            }
+        }).observe(document.querySelector('[data-screen="11"]'), { attributes: true, attributeFilter: ['class'] });
+
+        new MutationObserver(() => {
+            const s4 = document.querySelector('[data-screen="4"]');
+            if (s4 && s4.classList.contains('active') && !tradingActive && State.totalProfit < 100) startTrading();
+        }).observe(document.querySelector('[data-screen="4"]'), { attributes: true, attributeFilter: ['class'] });
 
         // ==================== RESTART ====================
-        function restartExperience() { if (cricketAnimId) cancelAnimationFrame(cricketAnimId);
-            cricketActive = false; if (tradingInterval) clearInterval(tradingInterval);
-            tradingActive = false; if (newsTimeout) clearTimeout(newsTimeout);
+        function restartExperience() {
+            if (cricketAnimId) cancelAnimationFrame(cricketAnimId);
+            cricketActive = false;
+            if (tradingInterval) clearInterval(tradingInterval);
+            tradingActive = false;
+            if (newsTimeout) clearTimeout(newsTimeout);
             document.getElementById("runs").textContent = '0';
             document.getElementById("cricket-feedback").textContent = '';
             document.getElementById("combo-display").textContent = '';
@@ -3531,9 +3434,12 @@ body {
             document.getElementById("blow-btn").classList.remove("hidden");
             document.getElementById("cut-btn").classList.add("hidden");
             document.getElementById("next-after-cake").classList.add("hidden");
-            [1, 2, 3, 4, 5].forEach(n => { const g = document.getElementById("gift" + n);
+            [1, 2, 3, 4, 5].forEach(n => {
+                const g = document.getElementById("gift" + n);
                 g.classList.remove("open");
-                g.style.display = n === 1 ? 'block' : 'none'; if (n !== 1) g.classList.add("hidden"); });
+                g.style.display = n === 1 ? 'block' : 'none';
+                if (n !== 1) g.classList.add("hidden");
+            });
             document.getElementById("gift1").classList.remove("hidden");
             document.getElementById("funny-reveal").classList.add("hidden");
             document.getElementById("final-card").classList.add("hidden");
@@ -3557,28 +3463,35 @@ body {
             setSceneClass(1);
             document.body.style.animation = '';
             go(1);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            showToast("🔄 Let's go again!", 2000); }
+            document.getElementById('app').scrollTop = 0;
+            showToast("🔄 Let's go again!", 2000);
+        }
 
         // ==================== CURSOR HEARTS ====================
         let heartThrottle = 0;
-        document.addEventListener("mousemove", e => { heartThrottle++; if (heartThrottle % 3 !== 0) return; const h =
-                document.createElement("div");
+        document.addEventListener("mousemove", e => {
+            heartThrottle++;
+            if (heartThrottle % 3 !== 0) return;
+            const h = document.createElement("div");
             h.className = "cursor-heart";
             h.innerHTML = ["💖", "✨", "💕", "🌟", "❤️"][Math.floor(Math.random() * 5)];
             h.style.left = e.clientX + "px";
             h.style.top = e.clientY + "px";
             h.style.fontSize = (Math.random() * 10 + 10) + "px";
             document.body.appendChild(h);
-            setTimeout(() => h.remove(), 600); });
+            setTimeout(() => h.remove(), 600);
+        });
 
         // ==================== INIT ====================
-        window.addEventListener('resize', () => { if (document.querySelector('[data-screen="3"].active'))
-            updateBallMarker();
+        window.addEventListener('resize', () => {
+            if (document.querySelector('[data-screen="3"].active')) updateBallMarker();
             resizeStars();
             resizeConstellation();
-            resizeConfetti(); });
-        if (loadState() && State.currentScreen > 1) { updateProgressTracker(getTrackerStage(State.currentScreen)); } else {
+            resizeConfetti();
+        });
+        if (loadState() && State.currentScreen > 1) {
+            updateProgressTracker(getTrackerStage(State.currentScreen));
+        } else {
             updateProgressTracker(1);
         }
         setSceneClass(State.currentScreen || 1);
@@ -3591,30 +3504,23 @@ body {
             "color:#4ade80;");
         console.log("%c🔍 Hidden objects scattered across screens... can you find all 5?", "color:#7dd3fc;");
 
-
-
         window.onload = () => {
-    document.body.style.transform = "translateZ(0)";
-};
+            document.body.style.transform = "translateZ(0)";
+        };
 
-
-
-  // Fix mobile scroll jitter during screen transitions
-  (function() {
-    const origGo = window.go;
-    if (typeof origGo === 'function') {
-      window.go = function(n) {
-        origGo(n);
-        // Remove smooth scrolling to prevent mobile shake
-        window.scrollTo(0, 0);
-      };
-    }
-    // Also disable default scroll restoration
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-  })();
-
+        // Fix mobile scroll jitter during screen transitions – keep app scroll simple
+        (function() {
+            const origGo = window.go;
+            if (typeof origGo === 'function') {
+                window.go = function(n) {
+                    origGo(n);
+                    document.getElementById('app').scrollTop = 0;
+                };
+            }
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+        })();
     </script>
 
 </body>
